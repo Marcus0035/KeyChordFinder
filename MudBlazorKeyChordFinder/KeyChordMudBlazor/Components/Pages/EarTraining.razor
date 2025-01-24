@@ -1,0 +1,111 @@
+﻿@using KeyChordFinder.Services
+@using KeyChordFinder.Data.Model
+@using KeyChordFinder.Data
+@implements IDisposable
+@inject PlayAudio PlayAudioService
+@page "/ear-training"
+
+<MudContainer Class="mt-5" MaxWidth="MaxWidth.Medium">
+    <MudPaper Class="pa-4 mb-4 d-flex justify-center" Elevation="4">
+        <MudText Typo="Typo.h4">Ear Training</MudText>
+    </MudPaper>
+
+    <MudPaper Class="pa-4 mb-4 d-flex">
+        <MudSelect @bind-Value="selectedOctave"
+        Label="Select Octave"
+        Variant="Variant.Outlined"
+        Class="me-5">
+            @foreach (var octave in octaves)
+            {
+                <MudSelectItem Value="@octave">@($"C{octave}-B{octave}")</MudSelectItem>
+            }
+        </MudSelect>
+        <MudButton Color="Color.Primary" OnClick="PlayNote">Play</MudButton>
+    </MudPaper>
+
+    <MudPaper Class="pa-4 mb-4" Elevation="4">
+        <MudStack Class="mb-4">
+            <MudText Typo="Typo.h6" Class="mb-2">Select a Note</MudText>
+            <MudToggleGroup T="string" SelectionMode="SelectionMode.SingleSelection" Color="Color.Info" Class="mb-4" ValueChanged="NotePressed" Disabled="@disableAnswer">
+                @foreach (var note in notes)
+                {
+                    <MudToggleItem Value="@note.Name" Text="@note.Name" Class="mud-toggle-item" />
+                }
+            </MudToggleGroup>
+        </MudStack>
+    </MudPaper>
+    @if (showAnswer)
+    {
+        <MudAlert Severity="@alertSeverity" Variant="Variant.Filled">Right Answer: @currentNote </MudAlert>
+    }
+</MudContainer>
+
+@code {
+    List<Note> notes = new();
+    List<int> octaves = new();
+    int selectedOctave = 4;
+    bool disableAnswer = true;
+
+    protected override void OnInitialized()
+    {
+        notes = KeyChordFinderDbContext.GetOctave();
+        octaves = KeyChordFinderDbContext.GetOctaveNumbers();
+    }
+
+    MudBlazor.Severity alertSeverity = new();
+
+    async void NotePressed(string noteName)
+    {
+        disableAnswer = true;
+        if (noteName == currentNote)
+        {
+            alertSeverity = MudBlazor.Severity.Success;
+        }
+        else
+        {
+            alertSeverity = MudBlazor.Severity.Error;
+        }
+        await ShowAnswer();
+    }
+
+    bool showAnswer = false;
+    async Task ShowAnswer()
+    {
+        showAnswer = true;
+
+        await Task.Delay(1000);
+
+        showAnswer = false;
+    }
+
+    string currentNote = string.Empty;
+
+    async Task PlayNote()
+    {
+        //muze to ukazat dalsi notu kdyz odpovi a hned chce dalsi
+        showAnswer = false;
+
+        if (disableAnswer)
+        {
+            //kdyz zahraje stejne nota 2x za sebou. nejde to zmacknout po druhe, vyresit to odkliknuti po inputu
+            currentNote = GenerateRandomNoteFromOctave().Name;
+            disableAnswer = false;
+        }
+
+        string basePath = AppContext.BaseDirectory;
+        string relativePath = Path.Combine(basePath, @"..\..\..\..\..\..\..\KeyChordFinder.Data\PianoSamples", currentNote + $"{selectedOctave}.wav");
+        string targetPath = Path.GetFullPath(relativePath); // Resolve the full path
+        await PlayAudioService.PlaySample(targetPath);
+    }
+
+    Note GenerateRandomNoteFromOctave()
+    {
+        Random random = new Random();
+        int randomInt = random.Next(0, 12);
+        return notes[randomInt];
+    }
+
+    public void Dispose()
+    {
+    }
+}

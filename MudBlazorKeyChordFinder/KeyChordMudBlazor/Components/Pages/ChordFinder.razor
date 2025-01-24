@@ -1,0 +1,81 @@
+﻿@using KeyChordFinder.Services
+@using KeyChordFinder.Data.Model
+@using KeyChordFinder.Data
+
+@page "/chord-finder"
+
+<MudContainer Class="mt-5" MaxWidth="MaxWidth.Medium">
+    <MudPaper Class="pa-4 mb-4 d-flex justify-center" Elevation="4">
+        <MudText Typo="Typo.h4">Notes To Chords</MudText>
+    </MudPaper>
+    <MudPaper Class="pa-4 mb-4" Elevation="4">
+        <MudStack Class="mb-4">
+            <MudText Typo="Typo.h6" Class="mb-2">Select Notes</MudText>
+            <MudToggleGroup T="int" SelectionMode="SelectionMode.MultiSelection" ValuesChanged="FindChord" Color="Color.Secondary" Class="mb-4">
+                @foreach (Note note in notes)
+                {
+                    <MudToggleItem Value="@note.Id" Text="@note.Name" Class="mud-toggle-item" />
+                }
+            </MudToggleGroup>
+        </MudStack>
+    </MudPaper>
+
+    @if (returnNote != null && returnChord != null)
+    {
+        <MudPaper Class="pa-4" Elevation="4">
+            <MudText Typo="Typo.h6">Result: @returnNote.Name @returnChord.Name</MudText>
+        </MudPaper>
+    }
+    else if (showChordNotFound)
+    {
+        <MudPaper Class="pa-4" Elevation="4">
+            <MudText Typo="Typo.h6">@errorMessage</MudText>
+        </MudPaper>
+    }
+</MudContainer>
+
+
+
+@code {
+    List<Note> notes = KeyChordFinderDbContext.GetOctave();
+    List<Scale> scales = KeyChordFinderDbContext.GetScales();
+
+
+    //FindChord variables
+    Note? returnNote;
+    Chord? returnChord;
+
+    bool showChordNotFound = false;
+    string errorMessage = "";
+
+    void FindChord(IEnumerable<int> values)
+    {
+        returnChord = null;
+        returnNote = null;
+
+        switch (values.Count())
+        {
+            case 0:
+                showChordNotFound = false;
+                break;
+            case 1:
+                errorMessage = "Please Select More Than One Note";
+                showChordNotFound = true;
+                break;
+            default:
+                (returnNote, returnChord) = NotesToChords.GetChordsFromNotes(values.ToList());
+
+                if (returnNote == null || returnChord == null)
+                {
+                    errorMessage = "No Such Chord In Database";
+                    showChordNotFound = true;
+                }
+                else
+                {
+                    showChordNotFound = false;
+                }
+                break;
+        }
+    }
+}
+

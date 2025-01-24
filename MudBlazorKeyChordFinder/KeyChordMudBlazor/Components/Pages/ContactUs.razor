@@ -1,0 +1,74 @@
+﻿@using System.ComponentModel.DataAnnotations
+
+@page "/contact-us"
+
+<MudContainer Class="mt-5" MaxWidth="MaxWidth.Medium">
+    <MudText Typo="Typo.h4" Class="mb-4">Contact Us</MudText>
+    <MudPaper Class="pa-4" Elevation="4">
+        <EditForm Model="@model" OnValidSubmit="OnValidSubmit">
+            <DataAnnotationsValidator />
+            <MudTextField T="string" Label="Name" @bind-Value="model.Name" For="@(() => model.Name)" Required="true" RequiredError="Name is required!" Class="mb-4" />
+            <MudTextField T="string" Label="Email" @bind-Value="model.Email" For="@(() => model.Email)" Required="true" RequiredError="Email is required!" Validation="@(new EmailAddressAttribute() { ErrorMessage = "The email address is invalid" })" Class="mb-4" />
+            <MudTextField T="string" Label="Message" @bind-Value="model.Message" For="@(() => model.Message)" Required="true" RequiredError="Message is required!" Lines="4" Class="mb-4" />
+            <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary" Variant="Variant.Filled" FullWidth>Submit</MudButton>
+        </EditForm>
+    </MudPaper>
+
+    @if (showSuccessAlert)
+    {
+            <MudAlert Severity="Severity.Success" Variant="Variant.Filled" Class="mt-4">
+                Your feedback has been submitted successfully!
+            </MudAlert>
+    }
+
+    <MudDivider Class="my-4" />
+
+    <MudPaper Class="pa-4" Elevation="4">
+        <MudText Typo="Typo.h5" Class="mb-2">Our Contact Information</MudText>
+        <MudText Typo="Typo.body1" Class="mb-1"><MudIcon Icon="@Icons.Material.Filled.LocationOn" /> 1234 Music Lane, Melody City, 56789</MudText>
+        <MudText Typo="Typo.body1" Class="mb-1"><MudIcon Icon="@Icons.Material.Filled.Phone" /> +1 (234) 567-8901</MudText>
+        <MudText Typo="Typo.body1"><MudIcon Icon="@Icons.Material.Filled.Email" /> contact@musicapp.com</MudText>
+    </MudPaper>
+</MudContainer>
+
+@code {
+    private ContactFormModel model = new ContactFormModel();
+    private bool showSuccessAlert = false;
+
+    class ContactFormModel
+    {
+        [Required(ErrorMessage = "Name is required!")]
+        public string Name { get; set; }
+
+        [Required(ErrorMessage = "Email is required!")]
+        [EmailAddress(ErrorMessage = "The email address is invalid")]
+        public string Email { get; set; }
+
+        [Required(ErrorMessage = "Message is required!")]
+        public string Message { get; set; }
+    }
+
+    private async Task OnValidSubmit()
+    {
+        ClearInputFields();
+
+        // Show success alert
+        showSuccessAlert = true;
+        await Task.Delay(3000);
+        showSuccessAlert = false;
+    }
+
+    private void ClearInputFields()
+    {
+        model = new ContactFormModel();
+    }
+}
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,92 @@
+﻿@using KeyChordFinder.Services
+@implements IDisposable
+@page "/metronome"
+@inject PlayAudio PlayAudioService
+
+<MudContainer Class="mt-5" MaxWidth="MaxWidth.Large">
+    <MudText Typo="Typo.h4" Class="mb-4">Metronome</MudText>
+
+    <MudPaper Class="pa-4 mb-4">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <MudText Typo="Typo.h6">Settings</MudText>
+            <MudToggleIconButton Toggled="@isPlaying"
+                                 Icon="@Icons.Material.Filled.PlayArrow"
+                                 Color="@Color.Success"
+                                 ToggledIcon="@Icons.Material.Filled.Stop"
+                                 ToggledColor="@Color.Error"
+                                 ToggledChanged="OnToggleChanged" />
+        </div>
+        <MudPaper Class="pa-4 mb-4">
+            <MudSlider Variant="Variant.Filled" Label="Volume" Value="0.5"  Min="0" Max="1" Step="0.05" ValueChanged="((double newVolume) => OnVolumeChanged(newVolume))"/>
+            <MudText Typo="Typo.subtitle2">Volume</MudText>
+        </MudPaper>
+        <MudPaper Class="pa-4 mb-4">
+            <MudNumericField Value="bpm" Label="BPM" Variant="Variant.Text" Min="1" Max="222" ValueChanged="@((int newBpm) => OnBpmChanged(newBpm))" />
+        </MudPaper>
+        <MudPaper Class="pa-4 mb-4">
+            <MudSelect Value="selectedSound" Label="Select Sound" ValueChanged="@((string newSample) => OnSampleChanged(newSample))">
+                @foreach (var sound in soundOptions)
+                {
+                    <MudSelectItem Value="@sound">@sound</MudSelectItem>
+                }
+            </MudSelect>
+        </MudPaper>
+    </MudPaper>
+</MudContainer>
+
+@code {
+    private bool isPlaying = false;
+    private string selectedSound = "C:\\MRLN\\fl studio - kity\\! Výběr\\HH\\Southside Hi Hat.wav";
+    private double volume = 0.5;
+    private int bpm = 120;
+
+    private List<string> soundOptions = new List<string>
+    {
+        // "C:\\MRLN\\fl studio - kity\\! Výběr\\HH\\Southside Hi Hat.wav",
+        // "C:\\MRLN\\fl studio - kity\\! Výběr\\Perc\\perc - zay_2.wav",
+        // "C:\\MRLN\\fl studio - kity\\! Výběr\\KICK\\[SAINT6] Rack Kick.wav",
+        // "C:\\MRLN\\fl studio - kity\\! Výběr\\HH\\CowBell.wav"
+        "C:\\Users\\Marek\\MusicFL\\Drum Kits\\808_mafia\\Hi Hats\\Southside Hi Hat.wav",
+        "C:\\Users\\Marek\\MusicFL\\Drum Kits\\808_mafia\\Kicks\\Southside Kick.wav"
+    };
+
+    private void OnToggleChanged(bool toggled)
+    {
+        isPlaying = toggled;
+        if (isPlaying)
+        {
+            PlayAudioService.PlayMetronome(volume);
+        }
+        else
+        {
+            PlayAudioService.StopMetronome();
+        }
+    }
+
+    private void OnSampleChanged(string newSample)
+    {
+        selectedSound = newSample;
+        PlayAudioService.UpdateSample(newSample);
+    }
+
+    private void OnBpmChanged(int newBpm)
+    {
+        bpm = newBpm;
+        PlayAudioService.UpdateBpm(newBpm);
+    }
+
+    public void OnVolumeChanged(double newVolume)
+    {
+        volume = newVolume;
+        PlayAudioService.UpdateVolume(newVolume);
+    }
+
+    public void Dispose()
+    {
+        if (isPlaying)
+        {
+            PlayAudioService.StopMetronome();
+            isPlaying = false;
+        }
+    }
+}

@@ -1,0 +1,158 @@
+﻿@page "/"
+@inject NavigationManager Navigation
+
+<style>
+    .hover-scale {
+        transition: transform 0.3s ease;
+    }
+
+    .hover-scale:hover {
+        transform: scale(1.02);
+    }
+
+    .primary-bg {
+        background-color: var(--mud-palette-primary);
+    }
+
+    .secondary-bg {
+        background-color: var(--mud-palette-secondary);
+    }
+
+    .tertiary-bg {
+        background-color: var(--mud-palette-tertiary);
+    }
+
+    .info-bg {
+        background-color: var(--mud-palette-info);
+    }
+
+    .success-bg {
+        background-color: var(--mud-palette-success);
+    }
+
+    .warning-bg {
+        background-color: var(--mud-palette-warning);
+    }
+
+    .error-bg {
+        background-color: var(--mud-palette-error);
+    }
+
+    .dark-bg {
+        background-color: var(--mud-palette-dark);
+    }
+
+    .light-bg {
+        background-color: var(--mud-palette-light);
+    }
+
+    .d-flex h2 {
+        margin-left: 1rem;
+    }
+</style>
+
+<MudContainer Class="mt-5 px-8" MaxWidth="MaxWidth.False">
+    <MudGrid>
+        <MudItem xs="12" sm="6" md="4">
+            <MudPaper Elevation="2" Class="pa-4 hover-scale primary-bg" Style="height: 200px;" @onclick='() => NavigateTo("/scale-to-chords")'>
+                <div class="d-flex">
+                    <MudIcon Icon="@Icons.Material.Filled.MusicNote" Size="Size.Large" />
+                    <h2>Scale To Chords</h2>
+                </div>
+                <p>Find chords that fit within a selected scale.</p>
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="12" sm="6" md="4">
+            <MudPaper Elevation="2" Class="pa-4 hover-scale secondary-bg" Style="height: 200px;" @onclick='() => NavigateTo("/chord-finder")'>
+                <div class="d-flex">
+                    <MudIcon Icon="@Icons.Material.Filled.Bolt" Size="Size.Large" />
+                    <h2>Chord Finder</h2>
+                </div>
+                <p>Discover chords based on selected notes.</p>
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="12" sm="12" md="4">
+            <MudPaper Elevation="2" Class="pa-4 hover-scale tertiary-bg" Style="height: 200px;" @onclick='() => NavigateTo("/chord-progressions")'>
+                <div class="d-flex">
+                    <MudIcon Icon="@Icons.Material.Filled.Piano" Size="Size.Large" />
+                    <h2>Chord Progressions</h2>
+                </div>
+                <p>Explore common chord progressions.</p>
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="12" sm="6">
+            <MudGrid>
+                <MudItem xs="12">
+                    <MudPaper Elevation="2" Class="pa-4 hover-scale info-bg" Style="height: 200px;" @onclick='() => NavigateTo("/music-theory")'>
+                        <div class="d-flex">
+                            <MudIcon Icon="@Icons.Material.Filled.Book" Size="Size.Large" />
+                            <h2>Music Theory</h2>
+                        </div>
+                        <p>Learn the basics of music theory.</p>
+                    </MudPaper>
+                </MudItem>
+                <MudItem xs="12">
+                    <MudPaper Elevation="2" Class="pa-4 hover-scale success-bg" Style="height: 200px;" @onclick='() => NavigateTo("/practice-tools")'>
+                        <div class="d-flex">
+                            <MudIcon Icon="@Icons.Material.Filled.Build" Size="Size.Large" />
+                            <h2>Practice Tools</h2>
+                        </div>
+                        <p>Access tools to help you practice.</p>
+                    </MudPaper>
+                </MudItem>
+            </MudGrid>
+        </MudItem>
+        <MudItem xs="12" sm="6">
+            <MudPaper Elevation="2" Class="pa-4 hover-scale warning-bg" Style="height: 100%;" @onclick='() => NavigateTo("/instrument-tuner")'>
+                <div class="d-flex">
+                    <MudIcon Icon="@Icons.Material.Filled.Tune" Size="Size.Large" />
+                    <h2>Instrument Tuner</h2>
+                </div>
+                <p>Tune your instrument with our tuner.</p>
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="12" sm="6" md="4">
+            <MudPaper Elevation="2" Class="pa-4 hover-scale error-bg" Style="height: 200px;" @onclick='() => NavigateTo("/metronome")'>
+                <div class="d-flex">
+                    <MudIcon Icon="@Icons.Material.Filled.Timer" Size="Size.Large" />
+                    <h2>Metronome</h2>
+                </div>
+                <p>Keep time with our metronome.</p>
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="12" sm="6" md="4">
+            <MudPaper Elevation="2" Class="pa-4 hover-scale dark-bg" Style="height: 200px;" @onclick='() => NavigateTo("/ear-training")'>
+                <div class="d-flex">
+                    <MudIcon Icon="@Icons.Material.Filled.Hearing" Size="Size.Large" />
+                    <h2>Ear Training</h2>
+                </div>
+                <p>Improve your ear with training exercises.</p>
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="12" sm="12" md="4">
+            <MudPaper Elevation="2" Class="pa-4 hover-scale light-bg" Style="height: 200px;" @onclick='() => NavigateTo("/contact-us")'>
+                <div class="d-flex">
+                    <MudIcon Icon="@Icons.Material.Filled.Email" Size="Size.Large" />
+                    <h2>Contact Us</h2>
+                </div>
+                <p>Get in touch with us for more information.</p>
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+</MudContainer>
+
+@code {
+    private void NavigateTo(string url)
+    {
+        Navigation.NavigateTo(url);
+    }
+}
+
+
+
+
+
+
+
+
+
