@@ -20,13 +20,13 @@
                 <MudSelectItem Value="@octave">@($"C{octave}-B{octave}")</MudSelectItem>
             }
         </MudSelect>
-        <MudButton Color="Color.Primary" OnClick="PlayNote">Play</MudButton>
+        <MudButton Color="Color.Info" OnClick="PlayNote">Play</MudButton>
     </MudPaper>
 
     <MudPaper Class="pa-4 mb-4" Elevation="4">
         <MudStack Class="mb-4">
             <MudText Typo="Typo.h6" Class="mb-2">Select a Note</MudText>
-            <MudToggleGroup T="string" SelectionMode="SelectionMode.SingleSelection" Color="Color.Info" Class="mb-4" ValueChanged="NotePressed" Disabled="@disableAnswer">
+            <MudToggleGroup T="string" SelectionMode="SelectionMode.SingleSelection" Color="Color.Warning" Class="mb-4" ValueChanged="NotePressed" Disabled="@disableAnswer">
                 @foreach (var note in notes)
                 {
                     <MudToggleItem Value="@note.Name" Text="@note.Name" Class="mud-toggle-item" />

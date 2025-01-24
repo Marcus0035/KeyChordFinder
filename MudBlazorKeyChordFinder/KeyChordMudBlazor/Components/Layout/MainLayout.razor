@@ -18,7 +18,12 @@
     </MudMainContent>
 </MudLayout>
 
+    <MudThemeProvider @bind-IsDarkMode="@_isDarkMode" Theme="_theme" />
+
 @code {
+    private MudTheme _theme = new();
+    private bool _isDarkMode = true;
+
     bool _drawerOpen = true;
 
     void DrawerToggle()
