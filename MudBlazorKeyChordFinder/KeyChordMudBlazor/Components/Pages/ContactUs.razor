@@ -5,16 +5,16 @@
 <MudContainer Class="mt-5" MaxWidth="MaxWidth.Medium">
     <MudText Typo="Typo.h4" Class="mb-4">Contact Us</MudText>
     <MudPaper Class="pa-4" Elevation="4">
-        <EditForm Model="@model" OnValidSubmit="OnValidSubmit">
+        <EditForm Model="@_model" OnValidSubmit="OnValidSubmit">
             <DataAnnotationsValidator />
-            <MudTextField T="string" Label="Name" @bind-Value="model.Name" For="@(() => model.Name)" Required="true" RequiredError="Name is required!" Class="mb-4" />
-            <MudTextField T="string" Label="Email" @bind-Value="model.Email" For="@(() => model.Email)" Required="true" RequiredError="Email is required!" Validation="@(new EmailAddressAttribute() { ErrorMessage = "The email address is invalid" })" Class="mb-4" />
-            <MudTextField T="string" Label="Message" @bind-Value="model.Message" For="@(() => model.Message)" Required="true" RequiredError="Message is required!" Lines="4" Class="mb-4" />
+            <MudTextField T="string" Label="Name" @bind-Value="_model.Name" For="@(() => _model.Name)" Required="true" RequiredError="Name is required!" Class="mb-4" />
+            <MudTextField T="string" Label="Email" @bind-Value="_model.Email" For="@(() => _model.Email)" Required="true" RequiredError="Email is required!" Validation="@(new EmailAddressAttribute() { ErrorMessage = "The email address is invalid" })" Class="mb-4" />
+            <MudTextField T="string" Label="Message" @bind-Value="_model.Message" For="@(() => _model.Message)" Required="true" RequiredError="Message is required!" Lines="4" Class="mb-4" />
             <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary" Variant="Variant.Filled" FullWidth>Submit</MudButton>
         </EditForm>
     </MudPaper>
 
-    @if (showSuccessAlert)
+    @if (_showSuccessAlert)
     {
             <MudAlert Severity="Severity.Success" Variant="Variant.Filled" Class="mt-4">
                 Your feedback has been submitted successfully!
@@ -32,8 +32,8 @@
 </MudContainer>
 
 @code {
-    private ContactFormModel model = new ContactFormModel();
-    private bool showSuccessAlert = false;
+    private ContactFormModel _model = new ContactFormModel();
+    private bool _showSuccessAlert;
 
     class ContactFormModel
     {
@@ -53,14 +53,14 @@
         ClearInputFields();
 
         // Show success alert
-        showSuccessAlert = true;
+        _showSuccessAlert = true;
         await Task.Delay(3000);
-        showSuccessAlert = false;
+        _showSuccessAlert = false;
     }
 
     private void ClearInputFields()
     {
-        model = new ContactFormModel();
+        _model = new ContactFormModel();
     }
 }
 

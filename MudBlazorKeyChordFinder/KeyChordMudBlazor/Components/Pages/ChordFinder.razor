@@ -12,7 +12,7 @@
         <MudStack Class="mb-4">
             <MudText Typo="Typo.h6" Class="mb-2">Select Notes</MudText>
             <MudToggleGroup T="int" SelectionMode="SelectionMode.MultiSelection" ValuesChanged="FindChord" Color="Color.Secondary" Class="mb-4">
-                @foreach (Note note in notes)
+                @foreach (var note in _notes)
                 {
                     <MudToggleItem Value="@note.Id" Text="@note.Name" Class="mud-toggle-item" />
                 }
@@ -20,16 +20,16 @@
         </MudStack>
     </MudPaper>
 
-    @if (returnNote != null && returnChord != null)
+    @if (_returnNote != null && _returnChord != null)
     {
         <MudPaper Class="pa-4" Elevation="4">
-            <MudText Typo="Typo.h6">Result: @returnNote.Name @returnChord.Name</MudText>
+            <MudText Typo="Typo.h6">Result: @_returnNote.Name @_returnChord.Name</MudText>
         </MudPaper>
     }
-    else if (showChordNotFound)
+    else if (_showChordNotFound)
     {
         <MudPaper Class="pa-4" Elevation="4">
-            <MudText Typo="Typo.h6">@errorMessage</MudText>
+            <MudText Typo="Typo.h6">@_errorMessage</MudText>
         </MudPaper>
     }
 </MudContainer>
@@ -37,43 +37,44 @@
 
 
 @code {
-    List<Note> notes = KeyChordFinderDbContext.GetOctave();
-    List<Scale> scales = KeyChordFinderDbContext.GetScales();
-
+    readonly List<Note> _notes = KeyChordFinderDbContext.GetOctave();
 
     //FindChord variables
-    Note? returnNote;
-    Chord? returnChord;
+    Note? _returnNote;
+    Chord? _returnChord;
 
-    bool showChordNotFound = false;
-    string errorMessage = "";
+    bool _showChordNotFound;
+    string _errorMessage = "";
 
-    void FindChord(IEnumerable<int> values)
+    void FindChord(IEnumerable<int>? values)
     {
-        returnChord = null;
-        returnNote = null;
+        _returnChord = null;
+        _returnNote = null;
 
-        switch (values.Count())
+        if (values == null) return;
+        var enumerable = values as int[] ?? values.ToArray();
+        switch (enumerable.Count())
         {
             case 0:
-                showChordNotFound = false;
+                _showChordNotFound = false;
                 break;
             case 1:
-                errorMessage = "Please Select More Than One Note";
-                showChordNotFound = true;
+                _errorMessage = "Please Select More Than One Note";
+                _showChordNotFound = true;
                 break;
             default:
-                (returnNote, returnChord) = NotesToChords.GetChordsFromNotes(values.ToList());
+                (_returnNote, _returnChord) = NotesToChords.GetChordsFromNotes(enumerable.ToList());
 
-                if (returnNote == null || returnChord == null)
+                if (_returnNote == null || _returnChord == null)
                 {
-                    errorMessage = "No Such Chord In Database";
-                    showChordNotFound = true;
+                    _errorMessage = "No Such Chord In Database";
+                    _showChordNotFound = true;
                 }
                 else
                 {
-                    showChordNotFound = false;
+                    _showChordNotFound = false;
                 }
+
                 break;
         }
     }

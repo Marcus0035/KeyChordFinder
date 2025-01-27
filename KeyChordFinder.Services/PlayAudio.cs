@@ -5,123 +5,89 @@ namespace KeyChordFinder.Services
 {
     public class PlayAudio
     {
-        private string _audioFile = "C:\\MRLN\\fl studio - kity\\! Výběr\\HH\\Southside Hi Hat.wav"; // Ensure this path points to a valid audio file
         private CancellationTokenSource _cancellationTokenSource;
-        private int _bpm = 120;
-        private bool _isPlaying = false;
-        private double _volume = 1.0;
-
-        public async Task PlayMetronomeAsync(CancellationToken cancellationToken)
+        private bool _isPlaying;
+        
+        private async Task PlayMetronomeAsync(string fileName, int bpm ,double volume, CancellationToken cancellationToken)
         {
-            using (var audioFile = new AudioFileReader(_audioFile))
+            var path = GetMetronomeSamplePath(fileName);
+            await using var audioFile = new AudioFileReader(path);
+            var volumeProvider = new VolumeSampleProvider(audioFile.ToSampleProvider())
             {
-                var volumeProvider = new VolumeSampleProvider(audioFile.ToSampleProvider())
+                Volume = (float)volume
+            };
+
+            using var outputDevice = new WaveOutEvent();
+            outputDevice.Init(volumeProvider);
+
+            var interval = 60000 / bpm;
+            long nextTick = Environment.TickCount;
+
+            while (!cancellationToken.IsCancellationRequested)
+            {
+                long startTick = Environment.TickCount;
+                audioFile.Position = 0;
+                outputDevice.Play();
+                var trackLengthMs = (int)audioFile.TotalTime.TotalMilliseconds;
+                await Task.Delay(Math.Min(trackLengthMs, interval), cancellationToken);
+
+                outputDevice.Stop();
+
+                nextTick += interval;
+                var sleepTime = (int)(nextTick - Environment.TickCount);
+
+                if (sleepTime > 0)
                 {
-                    Volume = (float)_volume
-                };
-
-                using (var outputDevice = new WaveOutEvent())
-                {
-                    outputDevice.Init(volumeProvider);
-
-                    Console.WriteLine("Playing audio...");
-
-                    int interval = 60000 / _bpm; // Délka jednoho cyklu v ms
-                    long nextTick = Environment.TickCount; // Absolutní čas dalšího cyklu
-
-                    while (!cancellationToken.IsCancellationRequested)
-                    {
-                        // Nastav start přehrávání
-                        long startTick = Environment.TickCount;
-
-                        // Resetuj pozici a přehraj vzorek
-                        audioFile.Position = 0;
-                        outputDevice.Play();
-
-                        // Počkej na dokončení nebo zkrácení podle intervalu
-                        int trackLengthMs = (int)audioFile.TotalTime.TotalMilliseconds;
-                        await Task.Delay(Math.Min(trackLengthMs, interval), cancellationToken);
-
-                        outputDevice.Stop(); // Stopni přehrávač (pro jistotu)
-
-                        // Spočítej čas, který zbývá do příštího cyklu
-                        nextTick += interval;
-                        int sleepTime = (int)(nextTick - Environment.TickCount);
-
-                        // Pokud zbývá nějaký čas, počkej; jinak přejdi k další iteraci
-                        if (sleepTime > 0)
-                        {
-                            await Task.Delay(sleepTime, cancellationToken);
-                        }
-                        else
-                        {
-                            Console.WriteLine("Missed tick, adjusting...");
-                        }
-                    }
+                    await Task.Delay(sleepTime, cancellationToken);
                 }
             }
         }
-        public void PlayMetronome(double volume)
+        public void ToggleMetronome(string fileName, int bpm ,double volume)
         {
-            _volume = volume;
+            if (_isPlaying) this.StopMetronome();
             _cancellationTokenSource = new CancellationTokenSource();
             _isPlaying = true;
-            Task.Run(() => PlayMetronomeAsync(_cancellationTokenSource.Token));
+            Task.Run(() => PlayMetronomeAsync(fileName, bpm, volume ,_cancellationTokenSource.Token));
         }
         public void StopMetronome()
         {
             _cancellationTokenSource?.Cancel();
             _isPlaying = false;
         }
-
-
-        public void UpdateBpm(int bpm)
+        
+        public async Task PlaySample(string sampleName)
         {
-            _bpm = bpm;
-            if (_isPlaying)
+            await using var audioFile = new AudioFileReader(sampleName);
+            var volumeProvider = new VolumeSampleProvider(audioFile.ToSampleProvider())
             {
-                Restart();
-            }
-        }
-        public void UpdateSample(string audioFile)
-        {
-            _audioFile = audioFile;
-            if (_isPlaying)
-            {
-                Restart();
-            }
-        }
-        public void UpdateVolume(double volume)
-        {
-            _volume = volume;
-            if (_isPlaying)
-            {
-                Restart();
-            }
-        }
-        private void Restart()
-        {
-            StopMetronome();
-            PlayMetronome(_volume); // Restart with the current volume
+                Volume = 0.8f
+            };
+            using var outputDevice = new WaveOutEvent();
+            outputDevice.Init(volumeProvider);
+            outputDevice.Play();
+            await Task.Delay((int)audioFile.TotalTime.TotalMilliseconds);
+            outputDevice.Stop();
         }
 
-
-        public async Task PlaySample(string path)
+        private string GetMetronomeSamplePath(string sampleName)
         {
-            using (var audioFile = new AudioFileReader(path))
-            {
-                var volumeProvider = new VolumeSampleProvider(audioFile.ToSampleProvider())
-                {
-                    Volume = (float)_volume
-                };
-                using (var outputDevice = new WaveOutEvent())
-                {
-                    outputDevice.Init(volumeProvider);
-                    outputDevice.Play();
-                    await Task.Delay((int)audioFile.TotalTime.TotalMilliseconds);
-                    outputDevice.Stop();
-                }
-            }
+            var basePath = AppContext.BaseDirectory;
+            var relativePath = Path.Combine(basePath, @"..\..\..\..\..\..\..\KeyChordFinder.Data\MetronomeSamples", $"{sampleName}.wav");
+            return Path.GetFullPath(relativePath); // Resolve the full path
+        }
+
+        public static List<string?> GetMetronomeSampleNames()
+        {
+            var basePath = AppContext.BaseDirectory;
+            var relativePath = Path.Combine(basePath, @"..\..\..\..\..\..\..\KeyChordFinder.Data\MetronomeSamples");
+            var filePaths = Directory.GetFiles(relativePath);
+            return filePaths.Select(Path.GetFileNameWithoutExtension).ToList();
+        }
+        public string GetPianoSamplePath(string note, int octave)
+        {
+            var basePath = AppContext.BaseDirectory;
+            var relativePath = Path.Combine(basePath, @"..\..\..\..\..\..\..\KeyChordFinder.Data\PianoSamples", $"{note}{octave}.wav");
+            return Path.GetFullPath(relativePath); // Resolve the full path
         }
     }
 }

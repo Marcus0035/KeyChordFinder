@@ -7,25 +7,40 @@
     <MudText Typo="Typo.h4" Class="mb-4">Metronome</MudText>
 
     <MudPaper Class="pa-4 mb-4">
-        <div style="display: flex; justify-content: space-between; align-items: center;">
+
+        <div class="d-flex justify-content-between">
             <MudText Typo="Typo.h6">Settings</MudText>
-            <MudToggleIconButton Toggled="@isPlaying"
-                                 Icon="@Icons.Material.Filled.PlayArrow"
-                                 Color="@Color.Success"
-                                 ToggledIcon="@Icons.Material.Filled.Stop"
-                                 ToggledColor="@Color.Error"
-                                 ToggledChanged="OnToggleChanged" />
+            <MudToggleIconButton
+                Toggled="@_isPlaying"
+                Icon="@Icons.Material.Filled.PlayArrow"
+                Color="@Color.Success"
+                ToggledIcon="@Icons.Material.Filled.Stop"
+                ToggledColor="@Color.Error"
+                ToggledChanged="PlayStopButton"/>
         </div>
         <MudPaper Class="pa-4 mb-4">
-            <MudSlider Variant="Variant.Filled" Label="Volume" Value="0.5"  Min="0" Max="1" Step="0.05" ValueChanged="((double newVolume) => OnVolumeChanged(newVolume))"/>
+            <MudSlider Variant="Variant.Filled"
+                       Label="Volume"
+                       Value="@_volume"
+                       Min="0"
+                       Max="1"
+                       Step="0.01"
+                       ValueChanged="@((double value) => OnVolumeChanged(value))"/>
             <MudText Typo="Typo.subtitle2">Volume</MudText>
         </MudPaper>
         <MudPaper Class="pa-4 mb-4">
-            <MudNumericField Value="bpm" Label="BPM" Variant="Variant.Text" Min="1" Max="222" ValueChanged="@((int newBpm) => OnBpmChanged(newBpm))" />
+            <MudNumericField Value="@_bpm"
+                             Label="BPM"
+                             Variant="Variant.Text"
+                             Min="1"
+                             Max="222"
+                             ValueChanged="@((int value) => OnBpmChanged(value))"/>
         </MudPaper>
         <MudPaper Class="pa-4 mb-4">
-            <MudSelect Value="selectedSound" Label="Select Sound" ValueChanged="@((string newSample) => OnSampleChanged(newSample))">
-                @foreach (var sound in soundOptions)
+            <MudSelect Value="@_selectedSound"
+                       Label="Select Sound"
+                       ValueChanged="@((string value) => OnSoundChanged(value))">
+                @foreach (var sound in _soundOptions)
                 {
                     <MudSelectItem Value="@sound">@sound</MudSelectItem>
                 }
@@ -35,58 +50,57 @@
 </MudContainer>
 
 @code {
-    private bool isPlaying = false;
-    private string selectedSound = "C:\\MRLN\\fl studio - kity\\! Výběr\\HH\\Southside Hi Hat.wav";
-    private double volume = 0.5;
-    private int bpm = 120;
+    private bool _isPlaying;
+    private string _selectedSound = "HiHat";
+    private double _volume = 0.8;
+    private int _bpm = 120;
 
-    private List<string> soundOptions = new List<string>
-    {
-        // "C:\\MRLN\\fl studio - kity\\! Výběr\\HH\\Southside Hi Hat.wav",
-        // "C:\\MRLN\\fl studio - kity\\! Výběr\\Perc\\perc - zay_2.wav",
-        // "C:\\MRLN\\fl studio - kity\\! Výběr\\KICK\\[SAINT6] Rack Kick.wav",
-        // "C:\\MRLN\\fl studio - kity\\! Výběr\\HH\\CowBell.wav"
-        "C:\\Users\\Marek\\MusicFL\\Drum Kits\\808_mafia\\Hi Hats\\Southside Hi Hat.wav",
-        "C:\\Users\\Marek\\MusicFL\\Drum Kits\\808_mafia\\Kicks\\Southside Kick.wav"
-    };
+    private readonly List<string?> _soundOptions = PlayAudio.GetMetronomeSampleNames();
 
-    private void OnToggleChanged(bool toggled)
+    private void PlayStopButton(bool toggled)
     {
-        isPlaying = toggled;
-        if (isPlaying)
+        _isPlaying = toggled;
+        PlayOrRestartMetronome();
+    }
+
+    private void OnVolumeChanged(double value)
+    {
+        _volume = value;
+        if (_isPlaying)
         {
-            PlayAudioService.PlayMetronome(volume);
-        }
-        else
-        {
-            PlayAudioService.StopMetronome();
+            PlayOrRestartMetronome();
         }
     }
-
-    private void OnSampleChanged(string newSample)
+    private void OnBpmChanged(int value)
     {
-        selectedSound = newSample;
-        PlayAudioService.UpdateSample(newSample);
+        _bpm = value;
+        if (_isPlaying)
+        {
+            PlayOrRestartMetronome();
+        }
+    }
+    private void OnSoundChanged(string value)
+    {
+        _selectedSound = value;
+        if (_isPlaying)
+        {
+            PlayOrRestartMetronome();
+        }
     }
 
-    private void OnBpmChanged(int newBpm)
+    private void PlayOrRestartMetronome()
     {
-        bpm = newBpm;
-        PlayAudioService.UpdateBpm(newBpm);
+        PlayAudioService.StopMetronome();
+        if (_isPlaying)
+        {
+            PlayAudioService.ToggleMetronome(_selectedSound, _bpm, _volume);
+        }
     }
-
-    public void OnVolumeChanged(double newVolume)
-    {
-        volume = newVolume;
-        PlayAudioService.UpdateVolume(newVolume);
-    }
-
+    
     public void Dispose()
     {
-        if (isPlaying)
-        {
-            PlayAudioService.StopMetronome();
-            isPlaying = false;
-        }
+        if (!_isPlaying) return;
+        PlayAudioService.StopMetronome();
+        _isPlaying = false;
     }
 }

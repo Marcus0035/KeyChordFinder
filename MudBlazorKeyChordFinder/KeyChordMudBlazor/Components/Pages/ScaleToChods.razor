@@ -12,7 +12,7 @@
         <MudStack Class="mb-4">
             <MudText Typo="Typo.h6" Class="mb-2">Select a Note</MudText>
             <MudToggleGroup T="int?" SelectionMode="SelectionMode.ToggleSelection" Color="Color.Info" Class="mb-4" ValueChanged="OnNoteChanged">
-                @foreach (var note in notes)
+                @foreach (var note in _notes)
                 {
                     <MudToggleItem Value="@((int?)note.Id)" Text="@note.Name" Class="mud-toggle-item" />
                 }
@@ -26,7 +26,7 @@
         <MudStack Class="mb-4">
             <MudText Typo="Typo.h6" Class="mb-2">Select a Scale</MudText>
             <MudToggleGroup T="int?" SelectionMode="SelectionMode.ToggleSelection" Color="Color.Warning" Class="mb-4" ValueChanged="OnScaleChanged">
-                @foreach (var scale in scales)
+                @foreach (var scale in _scales)
                 {
                     <MudToggleItem Value="@((int?)scale.Id)" Text="@scale.Name" Class="mud-toggle-item" />
                 }
@@ -57,17 +57,17 @@
 </MudContainer>
 
 @code {
-    private int? _selectedNoteId = null;
-    private int? _selectedScaleId = null;
+    private int? _selectedNoteId;
+    private int? _selectedScaleId;
 
-    List<Note> notes = KeyChordFinderDbContext.GetOctave();
-    List<Scale> scales = KeyChordFinderDbContext.GetScales();
+    readonly List<Note> _notes = KeyChordFinderDbContext.GetOctave();
+    readonly List<Scale> _scales = KeyChordFinderDbContext.GetScales();
 
     private Note _selectedNote = new();
 
-    Dictionary<Note, List<Chord>> _chords = new Dictionary<Note, List<Chord>>();
+    Dictionary<Note, List<Chord>> _chords = new();
 
-    private bool _showChords = false;
+    private bool _showChords;
 
     void OnNoteChanged(int? selectedNoteId)
     {
@@ -85,8 +85,8 @@
     {
         if (_selectedNoteId != null && _selectedScaleId != null)
         {
-            _selectedNote = notes.First(n => n.Id == _selectedNoteId);
-            _chords = ChordsFromScalerr.GetAllChordsInScale(_selectedNote, (int)_selectedScaleId);
+            _selectedNote = _notes.First(n => n.Id == _selectedNoteId);
+            _chords = ChordsInScale.GetAllChordsInScale(_selectedNote, (int)_selectedScaleId);
             _showChords = true;
         }
         else
