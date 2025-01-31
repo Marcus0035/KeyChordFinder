@@ -73,7 +73,7 @@ namespace KeyChordFinder.Services
         {
             var basePath = AppContext.BaseDirectory;
             var relativePath = Path.Combine(basePath, @"..\..\..\..\..\..\..\KeyChordFinder.Data\MetronomeSamples", $"{sampleName}.wav");
-            return Path.GetFullPath(relativePath); // Resolve the full path
+            return Path.GetFullPath(relativePath);
         }
 
         public static List<string?> GetMetronomeSampleNames()
@@ -87,7 +87,7 @@ namespace KeyChordFinder.Services
         {
             var basePath = AppContext.BaseDirectory;
             var relativePath = Path.Combine(basePath, @"..\..\..\..\..\..\..\KeyChordFinder.Data\PianoSamples", $"{note}{octave}.wav");
-            return Path.GetFullPath(relativePath); // Resolve the full path
+            return Path.GetFullPath(relativePath);
         }
     }
 }

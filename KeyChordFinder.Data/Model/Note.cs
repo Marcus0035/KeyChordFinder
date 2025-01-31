@@ -14,8 +14,5 @@ namespace KeyChordFinder.Data.Model
         public string Name { get; set; } = "";
         public int Octave { get; set; }
         public string Pitch { get; set; } = "";
-
-        [NotMapped]
-        public bool IsPressed { get; set; } = false;
     }
 }
