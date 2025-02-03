@@ -14,6 +14,7 @@ namespace KeyChordMudBlazor
             builder.Services.AddMudServices();
             builder.Services.AddScoped<PlayAudio>();
 
+            //Copy the database file from the embedded resources to the local storage
             var assembly = Assembly.GetExecutingAssembly();
             DbHelper.CopyIfDoesntExist("KeyChordFinder.db", assembly);
 

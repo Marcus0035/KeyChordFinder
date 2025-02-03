@@ -11,12 +11,22 @@
     <MudPaper Class="pa-4 mb-4" Elevation="4">
         <MudStack Class="mb-4">
             <MudText Typo="Typo.h6" Class="mb-2">Select a Note</MudText>
-            <MudToggleGroup T="int?" SelectionMode="SelectionMode.ToggleSelection" Color="Color.Info" Class="mb-4" ValueChanged="OnNoteChanged">
-                @foreach (var note in _notes)
-                {
-                    <MudToggleItem Value="@((int?)note.Id)" Text="@note.Name" Class="mud-toggle-item" />
-                }
-            </MudToggleGroup>
+            <MudHidden Breakpoint="Breakpoint.SmAndDown">
+                <MudToggleGroup T="int?" SelectionMode="SelectionMode.ToggleSelection" Color="Color.Info" Class="mb-4" ValueChanged="OnNoteChanged">
+                    @foreach (var note in _notes)
+                    {
+                        <MudToggleItem Value="@((int?)note.Id)" Text="@note.Name" Class="mud-toggle-item" />
+                    }
+                </MudToggleGroup>
+            </MudHidden>
+            <MudHidden Breakpoint="Breakpoint.MdAndUp">
+                <MudSelect T="int?" Label="Select a Note" Color="Color.Info" Class="mb-4" ValueChanged="OnNoteChanged">
+                    @foreach (var note in _notes)
+                    {
+                        <MudSelectItem Value="@((int?)note.Id)">@note.Name</MudSelectItem>
+                    }
+                </MudSelect>
+            </MudHidden>
         </MudStack>
     </MudPaper>
 
@@ -25,12 +35,22 @@
     <MudPaper Class="pa-4 mb-4" Elevation="4">
         <MudStack Class="mb-4">
             <MudText Typo="Typo.h6" Class="mb-2">Select a Scale</MudText>
-            <MudToggleGroup T="int?" SelectionMode="SelectionMode.ToggleSelection" Color="Color.Warning" Class="mb-4" ValueChanged="OnScaleChanged">
-                @foreach (var scale in _scales)
-                {
-                    <MudToggleItem Value="@((int?)scale.Id)" Text="@scale.Name" Class="mud-toggle-item" />
-                }
-            </MudToggleGroup>
+            <MudHidden Breakpoint="Breakpoint.SmAndDown">
+                <MudToggleGroup T="int?" SelectionMode="SelectionMode.ToggleSelection" Color="Color.Warning" Class="mb-4" ValueChanged="OnScaleChanged">
+                    @foreach (var scale in _scales)
+                    {
+                        <MudToggleItem Value="@((int?)scale.Id)" Text="@scale.Name" Class="mud-toggle-item" />
+                    }
+                </MudToggleGroup>
+            </MudHidden>
+            <MudHidden Breakpoint="Breakpoint.MdAndUp">
+                <MudSelect T="int?" Label="Select a Scale" Color="Color.Warning" Class="mb-4" ValueChanged="OnScaleChanged">
+                    @foreach (var scale in _scales)
+                    {
+                        <MudSelectItem Value="@((int?)scale.Id)">@scale.Name</MudSelectItem>
+                    }
+                </MudSelect>
+            </MudHidden>
         </MudStack>
     </MudPaper>
 
@@ -39,21 +59,24 @@
         <MudDivider Class="mb-4" />
         <MudPaper Class="pa-4" Elevation="4">
             <MudText Typo="Typo.h5" Class="mb-4">Chords in Selected Scale</MudText>
-            <MudTable Items="_chords.Keys" Class="mt-3">
-                <RowTemplate>
-                    <MudTr>
-                        <MudTd>@context.Name</MudTd>
-                        <MudTd>
-                            @foreach (var chord in _chords[context])
-                            {
-                                <MudChip T="string" Color="Color.Success" Class="me-1">@chord.Name</MudChip>
-                            }
-                        </MudTd>
-                    </MudTr>
-                </RowTemplate>
-            </MudTable>
+                <MudGrid>
+                    @foreach (var note in _chords.Keys)
+                    {
+                        <MudItem xs="12" sm="6" md="4">
+                            <MudPaper Class="pa-2 mb-2" Elevation="2">
+                                <MudText Typo="Typo.h6" Class="mb-2">@note.Name</MudText>
+                                @foreach (var chord in _chords[note])
+                                {
+                                    <MudChip T="string" Color="Color.Success" Class="me-1 mb-1">@chord.Name</MudChip>
+                                }
+                            </MudPaper>
+                        </MudItem>
+                    }
+                </MudGrid>
         </MudPaper>
     }
+
+
 </MudContainer>
 
 @code {
@@ -96,5 +119,4 @@
         }
     }
 }
-
 

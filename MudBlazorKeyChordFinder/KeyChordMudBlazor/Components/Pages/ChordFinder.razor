@@ -23,7 +23,7 @@
     @if (_returnNote != null && _returnChord != null)
     {
         <MudPaper Class="pa-4" Elevation="4">
-            <MudText Typo="Typo.h6">Result: @_returnNote.Name @_returnChord.Name</MudText>
+            <MudText Typo="Typo.h6"><MudChip T="string" Color="Color.Info" Class="me-1 mb-1">Result: @_returnNote.Name @_returnChord.Name</MudChip></MudText>
         </MudPaper>
     }
     else if (_showChordNotFound)

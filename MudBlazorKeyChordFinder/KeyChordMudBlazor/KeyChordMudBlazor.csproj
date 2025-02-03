@@ -67,7 +67,7 @@
 
     <ItemGroup>
       <EmbeddedResource Include="Resources\Raw\KeyChordFinder.db">
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        <CopyToOutputDirectory>Never</CopyToOutputDirectory>
       </EmbeddedResource>
     </ItemGroup>
 

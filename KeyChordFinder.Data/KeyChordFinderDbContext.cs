@@ -12,18 +12,17 @@ namespace KeyChordFinder.Data
         public DbSet<Chord> Chords { get; set; }
         public DbSet<IntervalChord> IntervalChord { get; set; }
 
-        private static readonly string ConnectionString = GetConnectionString();
+        private static readonly string ConnectionString = GetConnectionString("KeyChordFinder.db");
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlite(ConnectionString);
         }
 
-        private static string GetConnectionString()
+        private static string GetConnectionString(string dbName)
         {
-            var basePath = AppContext.BaseDirectory;
-            var relativePath = Path.Combine(basePath, @"..\..\..\..\..\..\..\KeyChordFinder.Data\KeyChordFinder.db");
-            return $"Data source={Path.GetFullPath(relativePath)}";
+            var dbPath = DbHelper.GetDbPath(dbName);
+            return $"Data source={dbPath}";
         }
 
         public static List<Note> GetOctave()
