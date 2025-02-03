@@ -58,6 +58,20 @@
     </ItemGroup>
 
     <ItemGroup>
+      <MauiAsset Remove="Resources\Raw\KeyChordFinder.db" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="Resources\Raw\KeyChordFinder.db" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Include="Resources\Raw\KeyChordFinder.db">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </EmbeddedResource>
+    </ItemGroup>
+
+    <ItemGroup>
         <PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
         <PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="$(MauiVersion)" />
         <PackageReference Include="Microsoft.AspNetCore.Components.WebView.Maui" Version="$(MauiVersion)" />

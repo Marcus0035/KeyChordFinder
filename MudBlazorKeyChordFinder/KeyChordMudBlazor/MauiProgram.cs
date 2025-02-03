@@ -1,6 +1,8 @@
 ﻿using Microsoft.Extensions.Logging;
 using MudBlazor.Services;
 using KeyChordFinder.Services;
+using KeyChordFinder.Data;
+using System.Reflection;
 
 namespace KeyChordMudBlazor
 {
@@ -12,6 +14,9 @@ namespace KeyChordMudBlazor
             builder.Services.AddMudServices();
             builder.Services.AddScoped<PlayAudio>();
 
+            var assembly = Assembly.GetExecutingAssembly();
+            DbHelper.CopyIfDoesntExist("KeyChordFinder.db", assembly);
+
             builder
                 .UseMauiApp<App>()
                 .ConfigureFonts(fonts =>
@@ -22,8 +27,8 @@ namespace KeyChordMudBlazor
             builder.Services.AddMauiBlazorWebView();
 
 #if DEBUG
-    		builder.Services.AddBlazorWebViewDeveloperTools();
-    		builder.Logging.AddDebug();
+            builder.Services.AddBlazorWebViewDeveloperTools();
+            builder.Logging.AddDebug();
 #endif
 
             return builder.Build();
