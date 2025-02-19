@@ -1,0 +1,122 @@
+﻿@using KeyChordFinder.Services
+@using KeyChordFinder.Data.Model
+@using KeyChordFinder.Data
+
+@page "/scale-to-chords"
+
+<MudContainer Class="mt-5" MaxWidth="MaxWidth.Medium">
+    <MudPaper Class="pa-4 mb-4 d-flex justify-center" Elevation="4">
+        <MudText Typo="Typo.h4">Scale to Chords</MudText>
+    </MudPaper>
+    <MudPaper Class="pa-4 mb-4" Elevation="4">
+        <MudStack Class="mb-4">
+            <MudText Typo="Typo.h6" Class="mb-2">Select a Note</MudText>
+            <MudHidden Breakpoint="Breakpoint.SmAndDown">
+                <MudToggleGroup T="int?" SelectionMode="SelectionMode.ToggleSelection" Color="Color.Info" Class="mb-4" ValueChanged="OnNoteChanged">
+                    @foreach (var note in _notes)
+                    {
+                        <MudToggleItem Value="@((int?)note.Id)" Text="@note.Name" Class="mud-toggle-item" />
+                    }
+                </MudToggleGroup>
+            </MudHidden>
+            <MudHidden Breakpoint="Breakpoint.MdAndUp">
+                <MudSelect T="int?" Label="Select a Note" Color="Color.Info" Class="mb-4" ValueChanged="OnNoteChanged">
+                    @foreach (var note in _notes)
+                    {
+                        <MudSelectItem Value="@((int?)note.Id)">@note.Name</MudSelectItem>
+                    }
+                </MudSelect>
+            </MudHidden>
+        </MudStack>
+    </MudPaper>
+
+    <MudDivider Class="mb-4" />
+
+    <MudPaper Class="pa-4 mb-4" Elevation="4">
+        <MudStack Class="mb-4">
+            <MudText Typo="Typo.h6" Class="mb-2">Select a Scale</MudText>
+            <MudHidden Breakpoint="Breakpoint.SmAndDown">
+                <MudToggleGroup T="int?" SelectionMode="SelectionMode.ToggleSelection" Color="Color.Warning" Class="mb-4" ValueChanged="OnScaleChanged">
+                    @foreach (var scale in _scales)
+                    {
+                        <MudToggleItem Value="@((int?)scale.Id)" Text="@scale.Name" Class="mud-toggle-item" />
+                    }
+                </MudToggleGroup>
+            </MudHidden>
+            <MudHidden Breakpoint="Breakpoint.MdAndUp">
+                <MudSelect T="int?" Label="Select a Scale" Color="Color.Warning" Class="mb-4" ValueChanged="OnScaleChanged">
+                    @foreach (var scale in _scales)
+                    {
+                        <MudSelectItem Value="@((int?)scale.Id)">@scale.Name</MudSelectItem>
+                    }
+                </MudSelect>
+            </MudHidden>
+        </MudStack>
+    </MudPaper>
+
+    @if (_showChords)
+    {
+        <MudDivider Class="mb-4" />
+        <MudPaper Class="pa-4" Elevation="4">
+            <MudText Typo="Typo.h5" Class="mb-4">Chords in Selected Scale</MudText>
+                <MudGrid>
+                    @foreach (var note in _chords.Keys)
+                    {
+                        <MudItem xs="12" sm="6" md="4">
+                            <MudPaper Class="pa-2 mb-2" Elevation="2">
+                                <MudText Typo="Typo.h6" Class="mb-2">@note.Name</MudText>
+                                @foreach (var chord in _chords[note])
+                                {
+                                    <MudChip T="string" Color="Color.Success" Class="me-1 mb-1">@chord.Name</MudChip>
+                                }
+                            </MudPaper>
+                        </MudItem>
+                    }
+                </MudGrid>
+        </MudPaper>
+    }
+
+
+</MudContainer>
+
+@code {
+    private int? _selectedNoteId;
+    private int? _selectedScaleId;
+
+    readonly List<Note> _notes = KeyChordFinderDbContext.GetOctave();
+    readonly List<Scale> _scales = KeyChordFinderDbContext.GetScales();
+
+    private Note _selectedNote = new();
+
+    Dictionary<Note, List<Chord>> _chords = new();
+
+    private bool _showChords;
+
+    void OnNoteChanged(int? selectedNoteId)
+    {
+        _selectedNoteId = selectedNoteId;
+        FindChords();
+    }
+
+    void OnScaleChanged(int? selectedScaleId)
+    {
+        _selectedScaleId = selectedScaleId;
+        FindChords();
+    }
+
+    void FindChords()
+    {
+        if (_selectedNoteId != null && _selectedScaleId != null)
+        {
+            _selectedNote = _notes.First(n => n.Id == _selectedNoteId);
+            _chords = ChordsInScale.GetAllChordsInScale(_selectedNote, (int)_selectedScaleId);
+            _showChords = true;
+        }
+        else
+        {
+            _chords.Clear();
+            _showChords = false;
+        }
+    }
+}
+
