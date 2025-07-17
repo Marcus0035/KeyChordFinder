@@ -1,4 +1,5 @@
-﻿using KeyChordFinder.Data;
+﻿using System.Globalization;
+using KeyChordFinder.Data;
 using KeyChordFinder.Data.Model;
 
 namespace KeyChordFinder.Services
@@ -31,11 +32,13 @@ namespace KeyChordFinder.Services
 
         private static int CalculateIntervalFromRoot(Note root, Note interval)
         {
-            var factor = 12 / Math.Log(2);
-            var rootPitch = double.Parse(root.Pitch);
-            var intervalPitch = double.Parse(interval.Pitch);
-            return (int)Math.Round(factor * Math.Log(intervalPitch / rootPitch));
+            //culture because 42.22 != 4222
+            var rootPitch = double.Parse(root.Pitch, CultureInfo.InvariantCulture);
+            var intervalPitch = double.Parse(interval.Pitch, CultureInfo.InvariantCulture);
+
+            return (int)Math.Round(12 * Math.Log(intervalPitch / rootPitch, 2));
         }
+
 
         private static bool AreAllIntervalsExactlyTheSame(Chord chord, List<Interval> intervals)
         {

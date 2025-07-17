@@ -1,0 +1,24 @@
+﻿@inject NavigationManager Navigation
+
+@page "/chord-progressions"
+@page "/music-theory"
+@page "/practice-tools"
+@page "/instrument-tuner"
+
+<MudContainer Class="mt-5" MaxWidth="MaxWidth.Medium">
+    <MudPaper Class="pa-4 mb-4 d-flex justify-center" Elevation="4">
+        <MudText Typo="Typo.h4">Feature Is In Progress</MudText>
+    </MudPaper>
+    <MudPaper Class="pa-4 mb-4" Elevation="4">
+       <MudButton Color="Color.Primary" OnClick="NavigateHome">Back</MudButton>
+    </MudPaper>
+</MudContainer>
+
+@code
+{
+	private void NavigateHome()
+	{
+		Navigation.NavigateTo("/");
+	}
+}
+
