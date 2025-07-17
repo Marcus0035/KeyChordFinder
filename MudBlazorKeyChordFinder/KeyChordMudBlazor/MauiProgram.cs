@@ -26,6 +26,8 @@ namespace KeyChordMudBlazor
 
             builder.Services.AddMauiBlazorWebView();
 
+            builder.Services.AddSingleton<EmailService>();
+
 #if DEBUG
             builder.Services.AddBlazorWebViewDeveloperTools();
             builder.Logging.AddDebug();

@@ -1,4 +1,8 @@
-﻿@using System.ComponentModel.DataAnnotations
+﻿@inject EmailService EmailService
+@inject ISnackbar Snackbar
+@inject NavigationManager NavigationManager
+
+@using System.ComponentModel.DataAnnotations
 
 @page "/contact-us"
 
@@ -7,19 +11,12 @@
     <MudPaper Class="pa-4" Elevation="4">
         <EditForm Model="@_model" OnValidSubmit="OnValidSubmit">
             <DataAnnotationsValidator />
-            <MudTextField T="string" Label="Name" @bind-Value="_model.Name" For="@(() => _model.Name)" Required="true" RequiredError="Name is required!" Class="mb-4" />
             <MudTextField T="string" Label="Email" @bind-Value="_model.Email" For="@(() => _model.Email)" Required="true" RequiredError="Email is required!" Validation="@(new EmailAddressAttribute() { ErrorMessage = "The email address is invalid" })" Class="mb-4" />
+            <MudTextField T="string" Label="Subject" @bind-Value="_model.Subject" For="@(() => _model.Subject)" Required="true" RequiredError="Subject is required!" Class="mb-4" />
             <MudTextField T="string" Label="Message" @bind-Value="_model.Message" For="@(() => _model.Message)" Required="true" RequiredError="Message is required!" Lines="4" Class="mb-4" />
             <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary" Variant="Variant.Filled" FullWidth>Submit</MudButton>
         </EditForm>
     </MudPaper>
-
-    @if (_showSuccessAlert)
-    {
-            <MudAlert Severity="Severity.Success" Variant="Variant.Filled" Class="mt-4">
-                Your feedback has been submitted successfully!
-            </MudAlert>
-    }
 
     <MudDivider Class="my-4" />
 
@@ -29,20 +26,25 @@
         <MudText Typo="Typo.body1" Class="mb-1"><MudIcon Icon="@Icons.Material.Filled.Phone" /> +1 (234) 567-8901</MudText>
         <MudText Typo="Typo.body1"><MudIcon Icon="@Icons.Material.Filled.Email" /> contact@musicapp.com</MudText>
     </MudPaper>
+
+    <MudOverlay DarkBackground @bind-Visible="_sending">
+        <MudProgressCircular Color="Color.Primary" Indeterminate="true" />
+    </MudOverlay>
 </MudContainer>
 
 @code {
     private ContactFormModel _model = new ContactFormModel();
-    private bool _showSuccessAlert;
+    private bool _sending;
 
     class ContactFormModel
     {
-        [Required(ErrorMessage = "Name is required!")]
-        public string Name { get; set; }
 
         [Required(ErrorMessage = "Email is required!")]
         [EmailAddress(ErrorMessage = "The email address is invalid")]
         public string Email { get; set; }
+
+        [Required(ErrorMessage = "Name is required!")]
+        public string Subject { get; set; }
 
         [Required(ErrorMessage = "Message is required!")]
         public string Message { get; set; }
@@ -50,12 +52,13 @@
 
     private async Task OnValidSubmit()
     {
+        _sending = true;
+        await EmailService.SendEmailAsync(_model.Email, _model.Subject, _model.Message);
+        _sending = false;
         ClearInputFields();
 
-        // Show success alert
-        _showSuccessAlert = true;
-        await Task.Delay(3000);
-        _showSuccessAlert = false;
+        NavigationManager.NavigateTo("/");
+        Snackbar.Add("Your message has been sent successfully!", Severity.Success);
     }
 
     private void ClearInputFields()
