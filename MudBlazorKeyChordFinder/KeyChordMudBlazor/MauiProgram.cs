@@ -12,7 +12,6 @@ namespace KeyChordMudBlazor
         {
             var builder = MauiApp.CreateBuilder();
             builder.Services.AddMudServices();
-            builder.Services.AddScoped<PlayAudio>();
 
             //Copy the database file from the embedded resources to the local storage
             var assembly = Assembly.GetExecutingAssembly();
