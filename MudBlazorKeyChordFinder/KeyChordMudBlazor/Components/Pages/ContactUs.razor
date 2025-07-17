@@ -9,22 +9,13 @@
 <MudContainer Class="mt-5" MaxWidth="MaxWidth.Medium">
     <MudText Typo="Typo.h4" Class="mb-4">Contact Us</MudText>
     <MudPaper Class="pa-4" Elevation="4">
-        <EditForm Model="@_model" OnValidSubmit="OnValidSubmit">
-            <DataAnnotationsValidator />
-            <MudTextField T="string" Label="Email" @bind-Value="_model.Email" For="@(() => _model.Email)" Required="true" RequiredError="Email is required!" Validation="@(new EmailAddressAttribute() { ErrorMessage = "The email address is invalid" })" Class="mb-4" />
-            <MudTextField T="string" Label="Subject" @bind-Value="_model.Subject" For="@(() => _model.Subject)" Required="true" RequiredError="Subject is required!" Class="mb-4" />
-            <MudTextField T="string" Label="Message" @bind-Value="_model.Message" For="@(() => _model.Message)" Required="true" RequiredError="Message is required!" Lines="4" Class="mb-4" />
-            <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary" Variant="Variant.Filled" FullWidth>Submit</MudButton>
-        </EditForm>
-    </MudPaper>
-
-    <MudDivider Class="my-4" />
-
-    <MudPaper Class="pa-4" Elevation="4">
-        <MudText Typo="Typo.h5" Class="mb-2">Our Contact Information</MudText>
-        <MudText Typo="Typo.body1" Class="mb-1"><MudIcon Icon="@Icons.Material.Filled.LocationOn" /> 1234 Music Lane, Melody City, 56789</MudText>
-        <MudText Typo="Typo.body1" Class="mb-1"><MudIcon Icon="@Icons.Material.Filled.Phone" /> +1 (234) 567-8901</MudText>
-        <MudText Typo="Typo.body1"><MudIcon Icon="@Icons.Material.Filled.Email" /> contact@musicapp.com</MudText>
+	    <EditForm Model="@_model" OnValidSubmit="OnValidSubmit">
+		    <DataAnnotationsValidator />
+		    <MudTextField T="string" Label="Email" @bind-Value="_model.Email" For="@(() => _model.Email)" Required="true" RequiredError="Email is required!" Validation="@(new EmailAddressAttribute() { ErrorMessage = "The email address is invalid" })" Class="mb-4" />
+		    <MudTextField T="string" Label="Subject" @bind-Value="_model.Subject" For="@(() => _model.Subject)" Required="true" RequiredError="Subject is required!" Class="mb-4" />
+		    <MudTextField T="string" Label="Message" @bind-Value="_model.Message" For="@(() => _model.Message)" Required="true" RequiredError="Message is required!" Lines="4" Class="mb-4" />
+		    <MudButton ButtonType="ButtonType.Submit" Color="Color.Primary" Variant="Variant.Filled" FullWidth>Submit</MudButton>
+	    </EditForm>
     </MudPaper>
 
     <MudOverlay DarkBackground @bind-Visible="_sending">
