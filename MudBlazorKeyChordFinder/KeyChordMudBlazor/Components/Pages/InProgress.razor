@@ -5,13 +5,17 @@
 @page "/practice-tools"
 @page "/instrument-tuner"
 
-<MudContainer Class="mt-5" MaxWidth="MaxWidth.Medium">
-    <MudPaper Class="pa-4 mb-4 d-flex justify-center" Elevation="4">
-        <MudText Typo="Typo.h4">Feature Is In Progress</MudText>
-    </MudPaper>
-    <MudPaper Class="pa-4 mb-4" Elevation="4">
-       <MudButton Color="Color.Primary" OnClick="NavigateHome">Back</MudButton>
-    </MudPaper>
+<MudContainer Class="mt-10 d-flex justify-center">
+	<MudPaper Elevation="8" Class="pa-6 d-flex flex-column align-center text-center" Style="max-width: 500px;">
+		<MudIcon Icon="@Icons.Material.Filled.Construction" Size="Size.Large" Color="Color.Warning" Class="mb-4" />
+		<MudText Typo="Typo.h4" Class="mb-2">Feature In Progress</MudText>
+		<MudText Typo="Typo.body1" Class="mb-4">
+			This feature is currently under development. Check back soon!
+		</MudText>
+		<MudButton Variant="Variant.Filled" Color="Color.Warning" StartIcon="@Icons.Material.Filled.ArrowBack" OnClick="NavigateHome">
+			Back to Home
+		</MudButton>
+	</MudPaper>
 </MudContainer>
 
 @code
@@ -21,4 +25,3 @@
 		Navigation.NavigateTo("/");
 	}
 }
-
