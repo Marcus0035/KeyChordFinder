@@ -16,6 +16,7 @@ namespace KeyChordMudBlazor
             //Copy the database file from the embedded resources to the local storage
             var assembly = Assembly.GetExecutingAssembly();
             DbHelper.CopyIfDoesntExist("KeyChordFinder.db", assembly);
+            KeyChordFinderDbContext.InitializeConnection();
 
             builder
                 .UseMauiApp<App>()

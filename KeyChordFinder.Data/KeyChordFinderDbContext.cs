@@ -118,5 +118,11 @@ namespace KeyChordFinder.Data
                 .ToList();
         }
 
+        public static void InitializeConnection()
+        {
+            using var context = new KeyChordFinderDbContext();
+            var first = context.Chords.First();
+        }
+
     }
 }
