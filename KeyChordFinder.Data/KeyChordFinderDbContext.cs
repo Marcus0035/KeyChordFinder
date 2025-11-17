@@ -71,6 +71,14 @@ namespace KeyChordFinder.Data
             return context.Scales.ToList();
         }
 
+        public static List<Scale> GetScalesWithIntervals()
+        {
+            using var context = new KeyChordFinderDbContext();
+            return context.Scales.Include(x => x.Intervals)
+                                 .ThenInclude(x => x.Interval)
+                                 .ToList();
+        }
+
         public static List<Interval> GetIntervals()
         {
             using var context = new KeyChordFinderDbContext();

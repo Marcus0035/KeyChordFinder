@@ -1,0 +1,157 @@
+﻿@page "/music-theory"
+@using MudBlazor
+@using KeyChordFinder.Data
+@using KeyChordFinder.Data.Model
+
+
+<MudContainer MaxWidth="MaxWidth.Large" Class="py-8">
+    <MudPaper Class="pa-4 mb-4 d-flex justify-center" Elevation="4">
+        <MudText Typo="Typo.h4">Music Theory</MudText>
+    </MudPaper>
+    <!-- Introduction Section -->
+    <MudPaper Class="pa-4 mb-4" Elevation="4">
+        <MudExpansionPanel Text="Introduction" Class="mb-4">
+            <MudText Class="text-justify">
+                This chapter explores the mathematical and logical principles in music, aiming to demonstrate the close interconnection between these two disciplines, which are often perceived as separate worlds. Although the results of mathematics are based on precision, logical proofs and unchanging formulations, many people perceive music as based rather on emotions, imagination and feeling. Yet both disciplines share numerous common concepts. Analysis of music theory from the perspective of exact sciences shows that the laws of music make perfect mathematical sense, which can be especially understandable for individuals interested in precision, mathematics and logic.
+            </MudText>
+        </MudExpansionPanel>
+
+        <!-- Basics of Music Theory -->
+        <MudExpansionPanel Text="Basics of Music Theory" Class="mb-4">
+            <MudText Class="text-justify mb-4">
+                The foundation of music is sound, which arises from mechanical vibration in a material medium and is capable of creating an auditory sensation. Tones are a special type of sound, created by regular vibration (oscillation). Each tone is a vibration of air at a certain frequency.
+            </MudText>
+            <MudText Class="text-justify">
+                For mathematical and logical understanding of music theory, the concept of semitone is crucial. The octave, which is the basic range, repeats continuously over twelve keys (seven white and five black). The twelve tones (from C to B) are called an octave. The correct terminology for these basic units is semitone and an octave has twelve semitones. In this way, the musical system in European music is divided into twelve parts within one octave.
+            </MudText>
+        </MudExpansionPanel>
+
+        <!-- MIDI Format -->
+        <MudExpansionPanel Text="MIDI Format" Class="mb-4">
+            <MudText Class="text-justify mb-4">
+                For logical recording and manipulation of tones (semitones), the MIDI format is very useful. In MIDI format, tones are numbered with sequence numbers. For example, the lowest note A0 has the number 21 and the highest C8 has the number 108. The MIDI format was designed so that numbers increase by one as the keys follow each other, ignoring the differences between white and black keys. Moreover, all C notes have numbers divisible by twelve in MIDI format.
+            </MudText>
+            <MudText Class="text-justify">
+                This formula, which uses a constant ratio of frequencies of adjacent tones, shows that all tones throughout the entire range of the instrument are mathematically calculated.
+            </MudText>
+        </MudExpansionPanel>
+
+        <!-- Intervals -->
+        <MudExpansionPanel Text="Intervals" Class="mb-4">
+            <MudText Class="text-justify mb-4">
+                An interval is understood in a logical and mathematical sense primarily as the distance between two tones. This distance is measured in semitones and is most easily quantifiable using the MIDI format. The interval is then simply determined by subtracting the MIDI numbers of two tones. For example, the interval between tone C4 (MIDI no. 60) and E4 (MIDI no. 64) is equal to 64–60 (i.e., four semitones). An interval is defined only by distance and is the same regardless of octave or specific tones. For example, the interval C0–E0 is logically identical to the interval C5–E5 and F5–A5, because the difference between these tones is always the same.
+            </MudText>
+            <MudText Class="text-justify mb-4">
+                From a physical point of view, it is important that the impression from music does not depend so much on the specific frequencies of tones, but rather on the mutual ratios of their frequencies. In equal temperament (which is implicitly used when calculating MIDI intervals), the frequency ratio of any two immediately adjacent tones (semitones) is constant and is given by the twelfth root of two (¹²√2). This constant ratio ensures the mathematical logic of the entire tonal system.
+            </MudText>
+            <MudText Class="text-justify">
+                The most important interval is the octave, which includes twelve semitones. From mathematics it follows that in each octave interval, the upper note has exactly twice the frequency of the lower note (¹²√2^12). This property ensures that tones separated by an octave are perfectly in tune with each other and are perceived as essentially the same notes. Other consonant intervals arise when the frequency ratios are simple, for example the interval +7 (fifth) has a frequency ratio of almost exactly 3:2, and the interval +4 (third) has a frequency ratio of almost exactly 5:4.
+            </MudText>
+        </MudExpansionPanel>
+
+        <!-- Scales -->
+        <MudExpansionPanel Text="Scales" Class="mb-4">
+            <MudText Class="text-justify mb-4">
+                A scale is formed by selecting tones from the tonal range of a musical instrument, which is defined by several consecutive octaves. The basis of the modern Western scale is the division of each octave into twelve equal interval steps or semitones. From a mathematical point of view, equal temperament is key, where the frequency ratio between each adjacent semitone is the same.
+            </MudText>
+            <MudText Class="text-justify mb-4">
+                This mathematical basis allows for easy transposition. If a melody (sequence of tones) is defined by mutual intervals (e.g., +4 and +7), its character will be preserved even if the entire sequence is shifted to different starting tones. For example, the sequences C4-E4-G4 and E4-G#4-B4 sound "the same, yet different", because both maintain the interval structure (the second tone is 4 semitones and the third tone is 7 semitones above the first).
+            </MudText>
+            <MudText Class="text-justify mb-4">
+                While an octave has 12 semitones, diatonic scales typically use only seven of them (e.g., the white keys of a piano). The choice of twelve tones in an octave is historically connected with the need for basic intervals, such as the fifth (3:2), to be approximated as closely as possible by even division. This twelve-tone system is a compromise that solves the problems of older tuning systems (such as Pythagorean, where the ratios were not exact) and allows for modularity and transposition, although at the cost of slight deviation of some consonant intervals from their ideal integer ratios.
+            </MudText>
+        </MudExpansionPanel>
+
+        <!-- Scale Structures Table -->
+        <MudExpansionPanel Text="Interval Structures of the Most Common Musical Scales" Class="mb-4">
+            <MudText Class="text-justify mb-4">
+                The following table shows the most commonly used musical scales and their interval structure expressed in the number of semitones from the root tone. These interval formulas represent a universal way of describing scales regardless of what key they are played in. By selecting a root tone and adding the corresponding intervals, you can easily generate a scale in any key.
+            </MudText>
+            <MudText Class="text-justify mb-6">
+                The table contains the basic major and minor scales as well as their variants, such as harmonic and melodic minor. It also lists major and minor pentatonic scales, which are very common in popular music, and blues scale, typical for genres such as blues, jazz or rock.
+            </MudText>
+
+            @if (scales != null && scales.Count > 0)
+            {
+                <MudTable Items="scales" Bordered Dense Class="mb-4">
+                    <HeaderContent>
+                        <MudTh>Scale Name</MudTh>
+                        <MudTh>Intervals (semitones)</MudTh>
+                    </HeaderContent>
+                    <RowTemplate>
+                        <MudTd DataLabel="Scale Name">@context.Name</MudTd>
+                        <MudTd DataLabel="Intervals">@string.Join(", ", context.Intervals.OrderBy(x => x.Interval.IntervalValue).Select(x => x.Interval.IntervalValue))</MudTd>
+                    </RowTemplate>
+                </MudTable>
+            }
+            else
+            {
+                <MudAlert Severity="Severity.Info">No scales found in database</MudAlert>
+            }
+
+            <MudText Typo="Typo.caption">Table 1 - Scale structure by semitones</MudText>
+        </MudExpansionPanel>
+
+        <!-- Chords -->
+        <MudExpansionPanel Text="Chords" Class="mb-4">
+            <MudText Class="text-justify mb-4">
+                A chord represents playing several tones simultaneously. From a mathematical perspective, the consonance of a chord is determined primarily by the mutual frequency ratios of its tones. Two tones sound consonant if their frequencies are in a simple, integer ratio (e.g., 2:3, 3:5). Thus, fundamental harmony in music is directly connected to mathematics.
+            </MudText>
+            <MudText Class="text-justify mb-4">
+                An example is the major triad (e.g., C-E-G), which consists of intervals that are the most significant after the octave (+12). The frequency ratio of note E to note C (interval +4) is almost exactly 5:4, and the ratio of note G to note C (interval +7) is almost exactly 3:2. This close approximation to simple rational numbers explains why the C-E-G chord sounds consonant, while other randomly chosen combinations of tones often sound dissonant.
+            </MudText>
+            <MudText Class="text-justify">
+                An important principle in chords is octave equivalence: if the tones C, E and G are played in different octaves or doubled (e.g., G4-C5-E5-C6), they still form the same chord with the same harmony. This is because tones separated by an octave have a frequency ratio of exactly 2:1, and therefore sounding any F together with any other F in a different octave is perfectly harmonious. More complex compositions then arise from the alternation and combination of these perfect harmonies (such as octaves and fifths) with less perfect consonances or dissonances.
+            </MudText>
+        </MudExpansionPanel>
+
+        <!-- Chord Structures Table -->
+        <MudExpansionPanel Text="Interval Structures of the Most Common Chords" Class="mb-4">
+            <MudText Class="text-justify mb-6">
+                The following table provides an overview of the most common types of chords and their interval structures. Each chord is described by the number of semitones from the root tone, which represents a universal way of defining it regardless of the specific key. The interval formulas allow you to generate any chord based on selecting a root tone and adding the appropriate intervals.
+            </MudText>
+            <MudText Class="text-justify mb-6">
+                The described chord types include basic triads (major, minor, diminished, augmented), extended chords such as seventh chords, sus chords or add chords, but also more modern structures used in popular and jazz music. Thanks to the interval definition, these chords can be uniquely identified algorithmically, which is crucial for implementing functions such as chord recognition or generating chords in a scale.
+            </MudText>
+
+            @if (chords != null && chords.Count > 0)
+            {
+                <MudTable Items="chords" Bordered Dense>
+                    <HeaderContent>
+                        <MudTh>Chord Type</MudTh>
+                        <MudTh>Intervals (semitones)</MudTh>
+                    </HeaderContent>
+                    <RowTemplate>
+                        <MudTd DataLabel="Chord Type">@context.Name</MudTd>
+                        <MudTd DataLabel="Intervals">@string.Join(", ", context.Intervals.OrderBy(x => x.Interval.IntervalValue).Select(x => x.Interval.IntervalValue))</MudTd>
+                    </RowTemplate>
+                </MudTable>
+            }
+            else
+            {
+                <MudAlert Severity="Severity.Info">No chords found in database</MudAlert>
+            }
+
+            <MudText Typo="Typo.caption" Class="mt-4">Table 2 - Chord structure by semitones</MudText>
+        </MudExpansionPanel>
+    </MudPaper>
+</MudContainer>
+
+@code {
+    private List<Scale>? scales;
+    private List<Chord>? chords;
+
+    protected override void OnInitialized()
+    {
+        try
+        {
+            // Load scales and chords from database
+            scales = KeyChordFinderDbContext.GetScalesWithIntervals();
+            chords = KeyChordFinderDbContext.GetChords();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error loading data: {ex.Message}");
+        }
+    }
+}
